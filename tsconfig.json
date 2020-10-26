@@ -1,0 +1,18 @@
+{
+  "include": ["src"],
+  "compilerOptions": {
+    "baseUrl": ".",
+    "declaration": true,
+    "declarationMap": true,
+    "esModuleInterop": true,
+    "experimentalDecorators": true,
+    "lib": ["es2020", "dom", "dom.iterable"],
+    "module": "ESNext",
+    "moduleResolution": "node",
+    "noEmit": false,
+    "outDir": "./lib",
+    "sourceMap": true,
+    "strict": true,
+    "target": "ES2017"
+  }
+}

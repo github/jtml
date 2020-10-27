@@ -1,0 +1,33 @@
+{
+  "root": true,
+  "plugins": ["github"],
+  "extends": ["plugin:github/recommended", "plugin:github/typescript", "plugin:github/browser"],
+  "rules": {
+    "no-invalid-this": "off",
+    "@typescript-eslint/no-invalid-this": ["error"]
+  },
+  "overrides": [
+    {
+      "files": "test/*",
+      "rules": {
+        "github/unescaped-html-literal": "off"
+      },
+      "globals": {
+        "chai": false,
+        "expect": false
+      },
+      "env": {
+        "mocha": true
+      }
+    },
+    {
+      "files": "*.cjs",
+      "rules": {
+        "@typescript-eslint/no-var-requires": "off"
+      },
+      "env": {
+        "node": true
+      }
+    }
+  ]
+}

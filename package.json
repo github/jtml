@@ -1,0 +1,52 @@
+{
+  "name": "@github/jtml",
+  "version": "0.1.0",
+  "description": "A way to create Web Components, using TemplateInstances",
+  "homepage": "https://github.com/github/jtml",
+  "bugs": {
+    "url": "https://github.com/github/jtml/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/github/template-parts.git"
+  },
+  "license": "MIT",
+  "author": "GitHub Inc.",
+  "type": "module",
+  "main": "lib/index.js",
+  "module": "lib/index.js",
+  "files": [
+    "lib"
+  ],
+  "scripts": {
+    "build": "tsc --build",
+    "clean": "tsc --build --clean",
+    "lint": "eslint . --ignore-path .gitignore",
+    "pretest": "npm run build",
+    "test": "npm run lint && karma start test/karma.config.cjs"
+  },
+  "prettier": "@github/prettier-config",
+  "dependencies": {
+    "@github/template-parts": "^0.2.3"
+  },
+  "devDependencies": {
+    "@github/prettier-config": "0.0.4",
+    "@rollup/plugin-node-resolve": "^9.0.0",
+    "@rollup/plugin-typescript": "^6.0.0",
+    "@types/chai": "^4.2.14",
+    "@types/mocha": "^8.0.3",
+    "chai": "^4.2.0",
+    "eslint": "^7.12.0",
+    "eslint-plugin-github": "^4.1.1",
+    "karma": "^5.2.3",
+    "karma-chai": "^0.1.0",
+    "karma-chrome-launcher": "^3.1.0",
+    "karma-mocha": "^2.0.1",
+    "karma-mocha-reporter": "^2.2.5",
+    "karma-rollup-preprocessor": "^7.0.5",
+    "karma-safarinative-launcher": "^1.1.0",
+    "mocha": "^8.2.0",
+    "rollup": "^2.32.1",
+    "typescript": "^4.0.3"
+  }
+}

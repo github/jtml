@@ -1,66 +1,37 @@
-import {TemplateInstance, AttributeTemplatePart, NodeTemplatePart} from '@github/template-parts'
-import {isDirective} from './directive'
+import {
+  TemplateInstance,
+  NodeTemplatePart,
+  createProcessor,
+  processPropertyIdentity,
+  processBooleanAttribute
+} from '@github/template-parts'
+import {processDirective} from './directive'
+import {processEvent} from './events'
 import type {TemplatePart, TemplateTypeInit} from '@github/template-parts'
 
-const defaultProcessor = {
-  createCallback(instance: TemplateInstance, parts: Iterable<TemplatePart>, params: unknown): void {
-    return this.processCallback(instance, parts, params)
-  },
-
-  processCallback(_: TemplateInstance, parts: Iterable<TemplatePart>, params: unknown): void {
-    if (typeof params !== 'object' || !params) return
-    for (const part of parts) processPart(part, params)
-  }
-}
-
-const eventListeners = new WeakMap<Element, Map<string, EventHandler>>()
-class EventHandler {
-  handleEvent!: EventListener
-  constructor(private element: Element, private type: string) {
-    this.element.addEventListener(this.type, this)
-    eventListeners.get(this.element)!.set(this.type, this)
-  }
-  set(listener: EventListener) {
-    if (typeof listener == 'function') {
-      this.handleEvent = listener.bind(this.element)
-    } else if (typeof listener === 'object' && typeof (listener as EventHandler).handleEvent === 'function') {
-      this.handleEvent = (listener as EventHandler).handleEvent.bind(listener)
-    } else {
-      this.element.removeEventListener(this.type, this)
-      eventListeners.get(this.element)!.delete(this.type)
-    }
-  }
-  static for(part: AttributeTemplatePart): EventHandler {
-    if (!eventListeners.has(part.element)) eventListeners.set(part.element, new Map())
-    const type = part.attributeName.slice(2)
-    const elementListeners = eventListeners.get(part.element)!
-    if (elementListeners.has(type)) return elementListeners.get(type)!
-    return new EventHandler(part.element, type)
-  }
-}
-
-export function processPart(part: TemplatePart, params: unknown): void {
-  if (typeof params !== 'object' || !params) return
-  if (!(part.expression in params)) return
-  const value = (params as Record<string, unknown>)[part.expression] ?? ''
-  if (isDirective(value)) {
-    value(part)
-  } else if (
-    typeof value === 'boolean' &&
-    part instanceof AttributeTemplatePart &&
-    typeof part.element[part.attributeName as keyof Element] === 'boolean'
-  ) {
-    part.booleanValue = value
-  } else if (part instanceof AttributeTemplatePart && part.attributeName.startsWith('on')) {
-    EventHandler.for(part).set((value as unknown) as EventListener)
-    part.element.removeAttributeNS(part.attributeNamespace, part.attributeName)
-  } else if (value instanceof TemplateResult && part instanceof NodeTemplatePart) {
+function processSubTemplate(part: TemplatePart, value: unknown): boolean {
+  if (value instanceof TemplateResult && part instanceof NodeTemplatePart) {
     render(value, part)
-  } else if (value instanceof DocumentFragment && part instanceof NodeTemplatePart) {
-    part.replace((value as unknown) as ChildNode)
-  } else {
-    part.value = String(value)
+    return true
   }
+  return false
+}
+
+function processDocumentFragment(part: TemplatePart, value: unknown): boolean {
+  if (value instanceof DocumentFragment && part instanceof NodeTemplatePart) {
+    part.replace((value as unknown) as ChildNode)
+    return true
+  }
+  return false
+}
+
+export function processPart(part: TemplatePart, value: unknown): void {
+  processDirective(part, value) ||
+    processBooleanAttribute(part, value) ||
+    processEvent(part, value) ||
+    processSubTemplate(part, value) ||
+    processDocumentFragment(part, value) ||
+    processPropertyIdentity(part, value)
 }
 
 const templates = new WeakMap<TemplateStringsArray, HTMLTemplateElement>()
@@ -84,6 +55,7 @@ export class TemplateResult {
   }
 }
 
+const defaultProcessor = createProcessor(processPart)
 export function html(strings: TemplateStringsArray, ...values: unknown[]): TemplateResult {
   return new TemplateResult(strings, values, defaultProcessor)
 }

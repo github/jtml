@@ -13,12 +13,12 @@ export const until = directive<Array<Promise<unknown>>>(
         Promise.resolve(promises[i]).then(value => {
           if (i < state.i) {
             state.i = i
-            processPart(part, {[part.expression]: value})
+            processPart(part, value)
           }
         })
       } else if (i <= state.i) {
         state.i = i
-        processPart(part, {[part.expression]: promises[i]})
+        processPart(part, promises[i])
       }
     }
   }

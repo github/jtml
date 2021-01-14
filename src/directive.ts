@@ -9,6 +9,14 @@ export function isDirective(directiveCallback: unknown): directiveCallback is Di
   return directives.has(directiveCallback as DirectiveCallback)
 }
 
+export function processDirective(part: TemplatePart, value: unknown): boolean {
+  if (isDirective(value)) {
+    value(part)
+    return true
+  }
+  return false
+}
+
 export function directive<A extends unknown[]>(directiveFactory: DirectiveFactory<A>): DirectiveFactory<A> {
   return (...values: A): DirectiveCallback => {
     const callback = directiveFactory(...values)

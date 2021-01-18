@@ -23,7 +23,8 @@
     "clean": "tsc --build --clean",
     "lint": "eslint . --ignore-path .gitignore",
     "pretest": "npm run build",
-    "test": "npm run lint && karma start test/karma.config.cjs"
+    "test": "npm run lint && karma start test/karma.config.cjs",
+    "postpublish": "npm publish --ignore-scripts --@github:registry='https://npm.pkg.github.com'"
   },
   "prettier": "@github/prettier-config",
   "dependencies": {

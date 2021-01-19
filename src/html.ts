@@ -19,7 +19,7 @@ function processSubTemplate(part: TemplatePart, value: unknown): boolean {
 
 function processDocumentFragment(part: TemplatePart, value: unknown): boolean {
   if (value instanceof DocumentFragment && part instanceof NodeTemplatePart) {
-    part.replace((value as unknown) as ChildNode)
+    if (value.childNodes.length) part.replace(...value.childNodes)
     return true
   }
   return false

@@ -40,6 +40,17 @@ describe('render', () => {
       render(main(child('Goodbye')), surface)
       expect(surface.innerHTML).to.equal('<div><span>Goodbye</span></div>')
     })
+
+    it('can nest document fragments and text nodes', () => {
+      const main = frag => html`<span>${frag}</span>`
+      const fragment = document.createDocumentFragment()
+      fragment.append(new Text('Hello World'))
+      render(main(fragment), surface)
+      expect(surface.innerHTML).to.equal('<span>Hello World</span>')
+      fragment.append(document.createTextNode('Hello Universe!'))
+      render(main(fragment), surface)
+      expect(surface.innerHTML).to.equal('<span>Hello Universe!</span>')
+    })
   })
 
   describe('iterables', () => {

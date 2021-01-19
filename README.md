@@ -31,7 +31,7 @@ setInterval(() => render(theTime(new Date()), document.body), 1000)
 
 ### Expressions
 
-jtml interpolates placeholder expressions in special ways across the template. Depending on where you put a placeholder expression (the `${}` syntax is a placeholder expression) depends on what it does. _Importantly_ "Attributes" behave differently to "Nodes". Here is an comprehensive list:
+jtml interpolates placeholder expressions in special ways across the template. Depending on where you put a placeholder expression (the `${}` syntax is a placeholder expression) depends on what it does. _Importantly_ "Attributes" behave differently to "Nodes". Here is a comprehensive list:
 
 #### Attributes
 
@@ -166,7 +166,7 @@ render(html`<div>Hello ${embolden('world')}!</div>`, document.body)
 
 ##### Iterables (like Arrays)
 
-Any placeholder expression which evaluates to an Array/Iterable is evaluated per-item. If a single item is a Document Fragment or Sub Template then it behaves it will be rendered, otherwise it is treated as a String and gets added as a `Text` node. All of the contents of the Array will be rendered as one. Some examples:
+Any placeholder expression which evaluates to an Array/Iterable is evaluated per-item. If a single item is a Document Fragment or Sub Template then it will be rendered as you might expect, otherwise it is treated as a String and gets added as a `Text` node. All of the contents of the Array will be rendered as one. Some examples:
 
 ```js
 import {html, render} from '@github/jtml'

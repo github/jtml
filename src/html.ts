@@ -47,7 +47,7 @@ function processIterable(part: TemplatePart, value: unknown): boolean {
     if (nodes.length) part.replace(...nodes)
     return true
   } else {
-    part.value = [...value].join(' ')
+    part.value = Array.from(value).join(' ')
     return true
   }
 }

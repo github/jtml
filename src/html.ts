@@ -37,9 +37,9 @@ function processIterable(part: TemplatePart, value: unknown): boolean {
       if (item instanceof TemplateResult) {
         const fragment = document.createDocumentFragment()
         item.renderInto(fragment)
-        nodes.push(...fragment.children)
+        nodes.push(...fragment.childNodes)
       } else if (item instanceof DocumentFragment) {
-        nodes.push(...item.children)
+        nodes.push(...item.childNodes)
       } else {
         nodes.push(String(item))
       }

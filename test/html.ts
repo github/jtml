@@ -62,6 +62,34 @@ describe('render', () => {
       expect(surface.innerHTML).to.equal('<div>fourfivesix</div>')
     })
 
+    it('supports iterables of Sub Templates with text nodes', () => {
+      const main = list => html`<div>${list}</div>`
+      let fragments = ['one', 'two', 'three'].map(text => html`${text}`)
+      render(main(fragments), surface)
+      expect(surface.innerHTML).to.equal('<div>onetwothree</div>')
+      fragments = ['four', 'five', 'six'].map(text => html`${text}`)
+      render(main(fragments), surface)
+      expect(surface.innerHTML).to.equal('<div>fourfivesix</div>')
+    })
+
+    it('supports iterables of fragments with text nodes', () => {
+      const main = list => html`<div>${list}</div>`
+      let fragments = ['one', 'two', 'three'].map(text => {
+        const fragment = document.createDocumentFragment()
+        fragment.append(new Text(text))
+        return fragment
+      })
+      render(main(fragments), surface)
+      expect(surface.innerHTML).to.equal('<div>onetwothree</div>')
+      fragments = ['four', 'five', 'six'].map(text => {
+        const fragment = document.createDocumentFragment()
+        fragment.append(new Text(text))
+        return fragment
+      })
+      render(main(fragments), surface)
+      expect(surface.innerHTML).to.equal('<div>fourfivesix</div>')
+    })
+
     it('supports other strings iterables in nodes', () => {
       const main = list => html`<div>${list}</div>`
       render(main(new Set(['one', 'two', 'three'])), surface)

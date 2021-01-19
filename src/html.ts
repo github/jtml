@@ -25,12 +25,40 @@ function processDocumentFragment(part: TemplatePart, value: unknown): boolean {
   return false
 }
 
+function isIterable(value: unknown): value is Iterable<unknown> {
+  return typeof value === 'object' && Symbol.iterator in ((value as unknown) as Record<symbol, unknown>)
+}
+
+function processIterable(part: TemplatePart, value: unknown): boolean {
+  if (!isIterable(value)) return false
+  if (part instanceof NodeTemplatePart) {
+    const nodes = []
+    for (const item of value) {
+      if (item instanceof TemplateResult) {
+        const fragment = document.createDocumentFragment()
+        render(item, fragment)
+        nodes.push(...fragment.children)
+      } else if (item instanceof DocumentFragment) {
+        nodes.push(...item.children)
+      } else {
+        nodes.push(String(item))
+      }
+    }
+    if (nodes.length) part.replace(...nodes)
+    return true
+  } else {
+    part.value = Array.from(value).join(' ')
+    return true
+  }
+}
+
 export function processPart(part: TemplatePart, value: unknown): void {
   processDirective(part, value) ||
     processBooleanAttribute(part, value) ||
     processEvent(part, value) ||
     processSubTemplate(part, value) ||
     processDocumentFragment(part, value) ||
+    processIterable(part, value) ||
     processPropertyIdentity(part, value)
 }
 

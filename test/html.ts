@@ -42,6 +42,69 @@ describe('render', () => {
     })
   })
 
+  describe('iterables', () => {
+    it('supports arrays of strings in nodes', () => {
+      const main = list => html`<div>${list}</div>`
+      render(main(['one', 'two', 'three']), surface)
+      expect(surface.innerHTML).to.equal('<div>onetwothree</div>')
+      render(main(['four', 'five', 'six']), surface)
+      expect(surface.innerHTML).to.equal('<div>fourfivesix</div>')
+    })
+
+    it('supports other strings iterables in nodes', () => {
+      const main = list => html`<div>${list}</div>`
+      render(main(new Set(['one', 'two', 'three'])), surface)
+      expect(surface.innerHTML).to.equal('<div>onetwothree</div>')
+      render(
+        main(
+          new Map([
+            [4, 'four'],
+            [5, 'five'],
+            [6, 'six']
+          ]).values()
+        ),
+        surface
+      )
+      expect(surface.innerHTML).to.equal('<div>fourfivesix</div>')
+    })
+
+    it('supports iterables of strings in attributes', () => {
+      const main = list => html`<div class="${list}"></div>`
+      render(main(['one', 'two', 'three']), surface)
+      expect(surface.innerHTML).to.equal('<div class="one two three"></div>')
+      render(main(new Set(['four', 'five', 'six'])), surface)
+      expect(surface.innerHTML).to.equal('<div class="four five six"></div>')
+    })
+
+    it('supports nested iterables of document fragments', () => {
+      // prettier-ignore
+      const main = list => html`<ul>${list}</ul>`
+      render(
+        main(
+          ['One', 'Two'].map(text => {
+            const f = document.createDocumentFragment()
+            const li = document.createElement('li')
+            li.textContent = text
+            f.append(li)
+            return f
+          })
+        ),
+        surface
+      )
+      expect(surface.innerHTML).to.equal('<ul><li>One</li><li>Two</li></ul>')
+    })
+
+    it('supports nested iterables of templates', () => {
+      const child = item => html`<li>${item.name}</li>`
+      // prettier-ignore
+      const main = list => html`<ul>${list.map(child)}</ul>`
+      render(main([{name: 'One'}, {name: 'Two'}, {name: 'Three'}]), surface)
+      expect(surface.innerHTML).to.equal('<ul><li>One</li><li>Two</li><li>Three</li></ul>')
+      render(main([{name: 'Two'}, {name: 'Three'}, {name: 'Four'}]), surface)
+      expect(surface.innerHTML).to.equal('<ul><li>Two</li><li>Three</li><li>Four</li></ul>')
+    })
+  })
+
   describe('directives', () => {
     it('handles directives differently', () => {
       const setAsFoo = directive(() => part => {

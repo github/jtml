@@ -11,7 +11,7 @@ import type {TemplatePart, TemplateTypeInit} from '@github/template-parts'
 
 function processSubTemplate(part: TemplatePart, value: unknown): boolean {
   if (value instanceof TemplateResult && part instanceof NodeTemplatePart) {
-    render(value, part)
+    value.renderInto(part)
     return true
   }
   return false
@@ -36,7 +36,7 @@ function processIterable(part: TemplatePart, value: unknown): boolean {
     for (const item of value) {
       if (item instanceof TemplateResult) {
         const fragment = document.createDocumentFragment()
-        render(item, fragment)
+        item.renderInto(fragment)
         nodes.push(...fragment.children)
       } else if (item instanceof DocumentFragment) {
         nodes.push(...item.children)
@@ -63,6 +63,8 @@ export function processPart(part: TemplatePart, value: unknown): void {
 }
 
 const templates = new WeakMap<TemplateStringsArray, HTMLTemplateElement>()
+const renderedTemplates = new WeakMap<Node | NodeTemplatePart, HTMLTemplateElement>()
+const renderedTemplateInstances = new WeakMap<Node | NodeTemplatePart, TemplateInstance>()
 export class TemplateResult {
   constructor(
     public readonly strings: TemplateStringsArray,
@@ -81,6 +83,21 @@ export class TemplateResult {
       return template
     }
   }
+
+  renderInto(element: Node | NodeTemplatePart): void {
+    const template = this.template
+    if (renderedTemplates.get(element) !== template) {
+      renderedTemplates.set(element, template)
+      const instance = new TemplateInstance(template, this.values, this.processor)
+      renderedTemplateInstances.set(element, instance)
+      if (element instanceof NodeTemplatePart) {
+        element.replace(...instance.children)
+      } else {
+        element.appendChild(instance)
+      }
+    }
+    renderedTemplateInstances.get(element)!.update((this.values as unknown) as Record<string, unknown>)
+  }
 }
 
 const defaultProcessor = createProcessor(processPart)
@@ -88,18 +105,6 @@ export function html(strings: TemplateStringsArray, ...values: unknown[]): Templ
   return new TemplateResult(strings, values, defaultProcessor)
 }
 
-const renderedTemplates = new WeakMap<Node | NodeTemplatePart, HTMLTemplateElement>()
-const renderedTemplateInstances = new WeakMap<Node | NodeTemplatePart, TemplateInstance>()
 export function render(result: TemplateResult, element: Node | NodeTemplatePart): void {
-  if (renderedTemplates.get(element) !== result.template) {
-    renderedTemplates.set(element, result.template)
-    const instance = new TemplateInstance(result.template, result.values, result.processor)
-    renderedTemplateInstances.set(element, instance)
-    if (element instanceof NodeTemplatePart) {
-      element.replace(...instance.children)
-    } else {
-      element.appendChild(instance)
-    }
-  }
-  renderedTemplateInstances.get(element)!.update((result.values as unknown) as Record<string, unknown>)
+  result.renderInto(element)
 }

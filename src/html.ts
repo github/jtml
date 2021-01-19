@@ -19,7 +19,7 @@ function processSubTemplate(part: TemplatePart, value: unknown): boolean {
 
 function processDocumentFragment(part: TemplatePart, value: unknown): boolean {
   if (value instanceof DocumentFragment && part instanceof NodeTemplatePart) {
-    part.replace((value as unknown) as ChildNode)
+    if (value.childNodes.length) part.replace(...value.childNodes)
     return true
   }
   return false
@@ -37,9 +37,9 @@ function processIterable(part: TemplatePart, value: unknown): boolean {
       if (item instanceof TemplateResult) {
         const fragment = document.createDocumentFragment()
         item.renderInto(fragment)
-        nodes.push(...fragment.children)
+        nodes.push(...fragment.childNodes)
       } else if (item instanceof DocumentFragment) {
-        nodes.push(...item.children)
+        nodes.push(...item.childNodes)
       } else {
         nodes.push(String(item))
       }

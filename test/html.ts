@@ -40,6 +40,17 @@ describe('render', () => {
       render(main(child('Goodbye')), surface)
       expect(surface.innerHTML).to.equal('<div><span>Goodbye</span></div>')
     })
+
+    it('can nest document fragments and text nodes', () => {
+      const main = frag => html`<span>${frag}</span>`
+      const fragment = document.createDocumentFragment()
+      fragment.append(new Text('Hello World'))
+      render(main(fragment), surface)
+      expect(surface.innerHTML).to.equal('<span>Hello World</span>')
+      fragment.append(document.createTextNode('Hello Universe!'))
+      render(main(fragment), surface)
+      expect(surface.innerHTML).to.equal('<span>Hello Universe!</span>')
+    })
   })
 
   describe('iterables', () => {
@@ -48,6 +59,34 @@ describe('render', () => {
       render(main(['one', 'two', 'three']), surface)
       expect(surface.innerHTML).to.equal('<div>onetwothree</div>')
       render(main(['four', 'five', 'six']), surface)
+      expect(surface.innerHTML).to.equal('<div>fourfivesix</div>')
+    })
+
+    it('supports iterables of Sub Templates with text nodes', () => {
+      const main = list => html`<div>${list}</div>`
+      let fragments = ['one', 'two', 'three'].map(text => html`${text}`)
+      render(main(fragments), surface)
+      expect(surface.innerHTML).to.equal('<div>onetwothree</div>')
+      fragments = ['four', 'five', 'six'].map(text => html`${text}`)
+      render(main(fragments), surface)
+      expect(surface.innerHTML).to.equal('<div>fourfivesix</div>')
+    })
+
+    it('supports iterables of fragments with text nodes', () => {
+      const main = list => html`<div>${list}</div>`
+      let fragments = ['one', 'two', 'three'].map(text => {
+        const fragment = document.createDocumentFragment()
+        fragment.append(new Text(text))
+        return fragment
+      })
+      render(main(fragments), surface)
+      expect(surface.innerHTML).to.equal('<div>onetwothree</div>')
+      fragments = ['four', 'five', 'six'].map(text => {
+        const fragment = document.createDocumentFragment()
+        fragment.append(new Text(text))
+        return fragment
+      })
+      render(main(fragments), surface)
       expect(surface.innerHTML).to.equal('<div>fourfivesix</div>')
     })
 

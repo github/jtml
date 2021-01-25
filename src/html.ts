@@ -95,6 +95,7 @@ export class TemplateResult {
       } else {
         element.appendChild(instance)
       }
+      return
     }
     renderedTemplateInstances.get(element)!.update((this.values as unknown) as Record<string, unknown>)
   }

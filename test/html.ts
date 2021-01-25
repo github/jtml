@@ -16,6 +16,22 @@ describe('render', () => {
     surface = document.createElement('section')
   })
 
+  it('calls `createCallback` on first render', () => {
+    const main = (x = null) => html`<div class="${x}"></div>`
+    let called = false
+    const instance = main()
+    instance.processor = {
+      processCallback() {
+        throw new Error('Expected processCallback to not be called')
+      },
+      createCallback() {
+        called = true
+      }
+    }
+    instance.renderInto(surface)
+    expect(called).to.equal(true)
+  })
+
   it('memoizes by TemplateResult#template, updating old templates with new values', () => {
     const main = (x = null) => html`<div class="${x}"></div>`
     render(main('foo'), surface)
@@ -50,6 +66,17 @@ describe('render', () => {
       fragment.append(document.createTextNode('Hello Universe!'))
       render(main(fragment), surface)
       expect(surface.innerHTML).to.equal('<span>Hello Universe!</span>')
+    })
+
+    it('renders DocumentFragments nested in sub templates nested in arrays', () => {
+      const sub = () => {
+        const frag = document.createDocumentFragment()
+        frag.appendChild(document.createElement('div'))
+        return html`<span>${frag}</span>`
+      }
+      const main = () => html`<div>${[sub(), sub()]}</div>`
+      render(main(), surface)
+      expect(surface.innerHTML).to.contain('<div><span><div></div></span><span><div></div></span></div>')
     })
   })
 

@@ -3,8 +3,8 @@ import {directive} from './directive'
 import type {TemplatePart} from '@github/template-parts'
 
 const untils: WeakMap<TemplatePart, {i: number}> = new WeakMap()
-export const until = directive<Array<Promise<unknown>>>(
-  (...promises: Array<Promise<unknown>>) => (part: TemplatePart) => {
+export const until = directive(
+  (...promises: unknown[]) => (part: TemplatePart) => {
     if (!untils.has(part)) untils.set(part, {i: promises.length})
     const state = untils.get(part)!
     for (let i = 0; i < promises.length; i += 1) {
@@ -23,3 +23,5 @@ export const until = directive<Array<Promise<unknown>>>(
     }
   }
 )
+
+until(Promise.resolve(true), true)

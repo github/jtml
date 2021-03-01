@@ -21,5 +21,3 @@ export const until = directive((...promises: unknown[]) => (part: TemplatePart) 
     }
   }
 })
-
-until(Promise.resolve(true), true)

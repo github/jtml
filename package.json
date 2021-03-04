@@ -1,14 +1,14 @@
 {
   "name": "@github/jtml",
   "version": "0.3.4",
-  "description": "A way to create Web Components, using TemplateInstances",
+  "description": "Write HTML in JavaScript, using template-tags",
   "homepage": "https://github.com/github/jtml",
   "bugs": {
     "url": "https://github.com/github/jtml/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/github/template-parts.git"
+    "url": "git+https://github.com/github/jtml.git"
   },
   "license": "MIT",
   "author": "GitHub Inc.",

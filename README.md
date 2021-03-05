@@ -77,9 +77,9 @@ const p = ({classOne, classTwo, classThree}) => html`<p class="${classOne} ${cla
 render(p({classOne: 'red', classTwo: 'box', classThree: ''}), document.body)
 // ^ Renders `<p class="red box  "></p>`
 
-const i = ({classOne, classTwo}) => html`<p class="${classOne}-${classTwo}"></p>`
+const i = ({classOne, classTwo}) => html`<i class="${classOne}-${classTwo}"></i>`
 
-render(p({classOne: 'red', classTwo: 'box'}), document.body)
+render(i({classOne: 'red', classTwo: 'box'}), document.body)
 // ^ Renders `<i class="red-box"></i>`
 ```
 

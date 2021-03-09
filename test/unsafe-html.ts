@@ -6,6 +6,11 @@ describe('unsafeHTML', () => {
     render(html`<div>${unsafeHTML('Hello World')}</div>`, surface)
     expect(surface.innerHTML).to.equal('<div>Hello World</div>')
   })
+  it('disallows use inside of an attribute', () => {
+    const surface = document.createElement('section')
+    render(html`<div style="${unsafeHTML('Hello World')}"></div>`, surface)
+    expect(surface.innerHTML).to.equal('<div style=""></div>')
+  })
   it('renders the given value as HTML', async () => {
     const surface = document.createElement('section')
     render(html`<div>${unsafeHTML('<span>Hello World</span>')}</div>`, surface)

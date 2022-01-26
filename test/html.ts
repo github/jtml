@@ -1,4 +1,4 @@
-import {html, render, directive} from '..'
+import {html, render, directive} from '../lib/index.js'
 
 describe('html', () => {
   it('creates new TemplateResults with each call', () => {

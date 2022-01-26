@@ -5,8 +5,8 @@ import {
   processPropertyIdentity,
   processBooleanAttribute
 } from '@github/template-parts'
-import {processDirective} from './directive'
-import {processEvent} from './events'
+import {processDirective} from './directive.js'
+import {processEvent} from './events.js'
 import type {TemplatePart, TemplateTypeInit} from '@github/template-parts'
 
 function processSubTemplate(part: TemplatePart, value: unknown): boolean {

@@ -1,4 +1,4 @@
-import {html, render, until} from '..'
+import {html, render, until} from '../lib/index.js'
 
 describe('until', () => {
   it('renders a Promise when it resolves', async () => {

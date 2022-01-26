@@ -1,4 +1,4 @@
-import {directive} from './directive'
+import {directive} from './directive.js'
 import {NodeTemplatePart} from '@github/template-parts'
 import type {TemplatePart} from '@github/template-parts'
 

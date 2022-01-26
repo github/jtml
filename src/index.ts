@@ -1,4 +1,4 @@
-export {TemplateResult, html, render} from './html'
-export {isDirective, directive} from './directive'
-export {until} from './until'
-export {unsafeHTML} from './unsafe-html'
+export {TemplateResult, html, render} from './html.js'
+export {isDirective, directive} from './directive.js'
+export {until} from './until.js'
+export {unsafeHTML} from './unsafe-html.js'

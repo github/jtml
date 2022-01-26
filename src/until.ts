@@ -1,5 +1,5 @@
-import {processPart} from './html'
-import {directive} from './directive'
+import {processPart} from './html.js'
+import {directive} from './directive.js'
 import type {TemplatePart} from '@github/template-parts'
 
 const untils: WeakMap<TemplatePart, {i: number}> = new WeakMap()

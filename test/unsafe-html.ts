@@ -1,4 +1,4 @@
-import {html, render, unsafeHTML} from '..'
+import {html, render, unsafeHTML} from '../lib/index.js'
 
 describe('unsafeHTML', () => {
   it('renders basic text', async () => {

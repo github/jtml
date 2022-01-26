@@ -1,4 +1,7 @@
 const resolve = require('@rollup/plugin-node-resolve').default
+
+process.env.CHROME_BIN = require('chromium').path
+
 module.exports = function (config) {
   config.set({
     basePath: '..',

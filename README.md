@@ -160,7 +160,7 @@ const vanillaEmbolden = word => {
   return frag
 }
 
-render(html`<div>Hello ${embolden('world')}!</div>`, document.body)
+render(html`<div>Hello ${vanillaEmbolden('world')}!</div>`, document.body)
 // ^ Renders `<div>Hello <strong>world</strong>!</div>`
 ```
 

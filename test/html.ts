@@ -1,3 +1,4 @@
+import {expect} from 'chai'
 import {html} from '../lib/index.js'
 
 describe('html', () => {

@@ -1,3 +1,4 @@
+import {expect} from 'chai'
 import {html, render, unsafeHTML} from '../lib/index.js'
 
 describe('unsafeHTML', () => {
@@ -23,7 +24,7 @@ describe('unsafeHTML', () => {
   })
   it('updates correctly', async () => {
     const surface = document.createElement('section')
-    const fn = name => html`<div>${unsafeHTML(`<span>Hello</span><span>${name}</span>`)}</div>`
+    const fn = (name: string) => html`<div>${unsafeHTML(`<span>Hello</span><span>${name}</span>`)}</div>`
     render(fn('World'), surface)
     expect(surface.innerHTML).to.equal('<div><span>Hello</span><span>World</span></div>')
     render(fn('Universe'), surface)

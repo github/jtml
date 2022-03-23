@@ -29,7 +29,7 @@ class EventHandler {
 
 export function processEvent(part: TemplatePart, value: unknown): boolean {
   if (part instanceof AttributeTemplatePart && part.attributeName.startsWith('on')) {
-    EventHandler.for(part).set((value as unknown) as EventListener)
+    EventHandler.for(part).set(value as unknown as EventListener)
     part.element.removeAttributeNS(part.attributeNamespace, part.attributeName)
     return true
   }

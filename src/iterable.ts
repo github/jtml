@@ -3,7 +3,7 @@ import {NodeTemplatePart} from '@github/template-parts'
 import type {TemplatePart} from '@github/template-parts'
 
 function isIterable(value: unknown): value is Iterable<unknown> {
-  return typeof value === 'object' && Symbol.iterator in ((value as unknown) as Record<symbol, unknown>)
+  return typeof value === 'object' && Symbol.iterator in (value as unknown as Record<symbol, unknown>)
 }
 
 export function processIterable(part: TemplatePart, value: unknown): boolean {

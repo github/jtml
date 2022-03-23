@@ -36,6 +36,6 @@ export class TemplateResult {
       }
       return
     }
-    renderedTemplateInstances.get(element)!.update((this.values as unknown) as Record<string, unknown>)
+    renderedTemplateInstances.get(element)!.update(this.values as unknown as Record<string, unknown>)
   }
 }

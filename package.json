@@ -13,10 +13,10 @@
   "license": "MIT",
   "author": "GitHub Inc.",
   "type": "module",
-  "main": "src/index.js",
-  "module": "src/index.js",
+  "main": "lib/index.js",
+  "module": "lib/index.js",
   "files": [
-    "src"
+    "lib"
   ],
   "scripts": {
     "build": "tsc --build ./tsconfig.build.json",

@@ -3,15 +3,19 @@
   "plugins": ["github"],
   "extends": ["plugin:github/recommended", "plugin:github/typescript", "plugin:github/browser"],
   "rules": {
+    "import/no-unresolved": "off",
     "no-invalid-this": "off",
     "@typescript-eslint/no-invalid-this": ["error"],
-    "import/extensions": ["error", "always"]
+    "import/extensions": ["error", "always"],
+    "github/no-inner-html": "off"
   },
   "overrides": [
     {
       "files": "test/*",
       "rules": {
-        "github/unescaped-html-literal": "off"
+        "@typescript-eslint/ban-types": "off",
+        "github/unescaped-html-literal": "off",
+        "i18n-text/no-en": "off"
       },
       "globals": {
         "chai": false,
@@ -24,7 +28,8 @@
     {
       "files": "*.cjs",
       "rules": {
-        "@typescript-eslint/no-var-requires": "off"
+        "@typescript-eslint/no-var-requires": "off",
+        "import/no-commonjs": "off"
       },
       "env": {
         "node": true

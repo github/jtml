@@ -1,6 +1,7 @@
-import {processPart} from './html.js'
-import {directive} from './directive.js'
 import type {TemplatePart} from '@github/template-parts'
+
+import {processPart} from './processor.js'
+import {directive} from './directive.js'
 
 const untils: WeakMap<TemplatePart, {i: number}> = new WeakMap()
 export const until = directive((...promises: unknown[]) => (part: TemplatePart) => {

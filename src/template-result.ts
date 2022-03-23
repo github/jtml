@@ -8,7 +8,7 @@ export class TemplateResult {
   constructor(
     public readonly strings: TemplateStringsArray,
     public readonly values: unknown[],
-    public readonly processor: TemplateTypeInit
+    public processor: TemplateTypeInit
   ) {}
 
   get template(): HTMLTemplateElement {

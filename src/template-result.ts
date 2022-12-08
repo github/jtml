@@ -1,9 +1,11 @@
 import {TemplateInstance, NodeTemplatePart} from '@github/template-parts'
 import type {TemplateTypeInit} from '@github/template-parts'
+import {TrustedTypesPolicy} from './trusted-types.js'
 
 const templates = new WeakMap<TemplateStringsArray, HTMLTemplateElement>()
 const renderedTemplates = new WeakMap<Node | NodeTemplatePart, HTMLTemplateElement>()
 const renderedTemplateInstances = new WeakMap<Node | NodeTemplatePart, TemplateInstance>()
+
 export class TemplateResult {
   constructor(
     public readonly strings: TemplateStringsArray,
@@ -17,7 +19,11 @@ export class TemplateResult {
     } else {
       const template = document.createElement('template')
       const end = this.strings.length - 1
-      template.innerHTML = this.strings.reduce((str, cur, i) => str + cur + (i < end ? `{{ ${i} }}` : ''), '')
+      const html = this.strings.reduce((str, cur, i) => str + cur + (i < end ? `{{ ${i} }}` : ''), '')
+      const trustedHtml = TrustedTypesPolicy.cspTrustedTypesPolicy
+        ? (TrustedTypesPolicy.cspTrustedTypesPolicy.createHTML(html) as string)
+        : html
+      template.innerHTML = trustedHtml
       templates.set(this.strings, template)
       return template
     }

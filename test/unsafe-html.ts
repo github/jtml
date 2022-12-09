@@ -1,7 +1,13 @@
 import {expect} from 'chai'
-import {html, render, unsafeHTML} from '../lib/index.js'
+import {html, render, TemplateResult, unsafeHTML} from '../lib/index.js'
 
 describe('unsafeHTML', () => {
+  beforeEach(() => {
+    TemplateResult.setCSPTrustedTypesPolicy(null)
+  })
+  afterEach(() => {
+    TemplateResult.setCSPTrustedTypesPolicy(null)
+  })
   it('renders basic text', async () => {
     const surface = document.createElement('section')
     render(html`<div>${unsafeHTML('Hello World')}</div>`, surface)
@@ -30,5 +36,19 @@ describe('unsafeHTML', () => {
     render(fn('Universe'), surface)
     render(fn('<a href="">Universe</a>'), surface)
     expect(surface.innerHTML).to.equal('<div><span>Hello</span><span><a href="">Universe</a></span></div>')
+  })
+  it('respects trusted types', async () => {
+    let policyCalled = false
+    const rewrittenFragment = '<div id="bar">This has been rewritten by Trusted Types.</div>'
+    TemplateResult.setCSPTrustedTypesPolicy({
+      createHTML: (_html: string) => {
+        policyCalled = true
+        return rewrittenFragment
+      }
+    })
+    const surface = document.createElement('section')
+    render(html`<div>${unsafeHTML('<span>Hello</span><span>World</span>')}</div>`, surface)
+    expect(surface.innerHTML).to.equal(rewrittenFragment)
+    expect(policyCalled).to.be.true
   })
 })

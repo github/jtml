@@ -7,7 +7,8 @@
     "no-invalid-this": "off",
     "@typescript-eslint/no-invalid-this": ["error"],
     "import/extensions": ["error", "always"],
-    "github/no-inner-html": "off"
+    "github/no-inner-html": "off",
+    "@typescript-eslint/no-unused-vars": ["error", { "vars": "all", "argsIgnorePattern": "^_" }]
   },
   "overrides": [
     {

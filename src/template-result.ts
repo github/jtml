@@ -4,6 +4,15 @@ import type {TemplateTypeInit} from '@github/template-parts'
 const templates = new WeakMap<TemplateStringsArray, HTMLTemplateElement>()
 const renderedTemplates = new WeakMap<Node | NodeTemplatePart, HTMLTemplateElement>()
 const renderedTemplateInstances = new WeakMap<Node | NodeTemplatePart, TemplateInstance>()
+
+interface CSPTrustedHTMLToStringable {
+  toString: () => string
+}
+
+interface CSPTrustedTypesPolicy {
+  createHTML: (s: string) => CSPTrustedHTMLToStringable
+}
+
 export class TemplateResult {
   constructor(
     public readonly strings: TemplateStringsArray,
@@ -11,13 +20,21 @@ export class TemplateResult {
     public processor: TemplateTypeInit
   ) {}
 
+  static cspTrustedTypesPolicy: CSPTrustedTypesPolicy | null = null
+
+  static setCSPTrustedTypesPolicy(policy: CSPTrustedTypesPolicy | null) {
+    TemplateResult.cspTrustedTypesPolicy = policy
+  }
+
   get template(): HTMLTemplateElement {
     if (templates.has(this.strings)) {
       return templates.get(this.strings)!
     } else {
       const template = document.createElement('template')
       const end = this.strings.length - 1
-      template.innerHTML = this.strings.reduce((str, cur, i) => str + cur + (i < end ? `{{ ${i} }}` : ''), '')
+      const html = this.strings.reduce((str, cur, i) => str + cur + (i < end ? `{{ ${i} }}` : ''), '')
+      const trustedHtml = (TemplateResult.cspTrustedTypesPolicy?.createHTML(html) as string | undefined) ?? html
+      template.innerHTML = trustedHtml
       templates.set(this.strings, template)
       return template
     }

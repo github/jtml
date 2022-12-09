@@ -248,10 +248,10 @@ render(html`<div>${until(request, timeout, loading)}</div>`)
 
 ### CSP Trusted Types
 
-You can call `setCSPTrustedTypesPolicy(policy: TrustedTypePolicy | Promise<TrustedTypePolicy> | null)` from JavaScript to set a [CSP trusted types policy](https://web.dev/trusted-types/), which can perform (synchronous) filtering or rejection of the rendered template:
+You can call `TemplateResult.setCSPTrustedTypesPolicy(policy: TrustedTypePolicy | Promise<TrustedTypePolicy> | null)` from JavaScript to set a [CSP trusted types policy](https://web.dev/trusted-types/), which can perform (synchronous) filtering or rejection of the rendered template:
 
 ```ts
-import {setCspTrustedTypePolicy} from "@github/jtml";
+import {TemplateResult} from "@github/jtml";
 import DOMPurify from "dompurify"; // Using https://github.com/cure53/DOMPurify
 
 // This policy removes all HTML markup except links.
@@ -264,11 +264,11 @@ const policy = trustedTypes.createPolicy("links-only", {
     });
   },
 });
-setCSPTrustedTypesPolicy(policy);
+TemplateResult.setCSPTrustedTypesPolicy(policy);
 ```
 
 Note that:
 
 - Only a single policy can be set, shared by all `render` and `unsafeHTML` calls.
-- You should call `setCSPTrustedTypesPolicy()` ahead of any other call of `@github/jtml` in your code.
+- You should call `TemplateResult.setCSPTrustedTypesPolicy()` ahead of any other call of `@github/jtml` in your code.
 - Not all browsers [support the trusted types API in JavaScript](https://caniuse.com/mdn-api_trustedtypes). You may want to use the [recommended tinyfill](https://github.com/w3c/trusted-types#tinyfill) to construct a policy without causing issues in other browsers.

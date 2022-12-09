@@ -1,12 +1,12 @@
 import {expect} from 'chai'
-import {html, render, setCSPTrustedTypesPolicy, unsafeHTML} from '../lib/index.js'
+import {html, render, TemplateResult, unsafeHTML} from '../lib/index.js'
 
 describe('unsafeHTML', () => {
   beforeEach(() => {
-    setCSPTrustedTypesPolicy(null)
+    TemplateResult.setCSPTrustedTypesPolicy(null)
   })
   afterEach(() => {
-    setCSPTrustedTypesPolicy(null)
+    TemplateResult.setCSPTrustedTypesPolicy(null)
   })
   it('renders basic text', async () => {
     const surface = document.createElement('section')
@@ -40,7 +40,7 @@ describe('unsafeHTML', () => {
   it('respects trusted types', async () => {
     let policyCalled = false
     const rewrittenFragment = '<div id="bar">This has been rewritten by Trusted Types.</div>'
-    setCSPTrustedTypesPolicy({
+    TemplateResult.setCSPTrustedTypesPolicy({
       createHTML: (_html: string) => {
         policyCalled = true
         return rewrittenFragment

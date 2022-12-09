@@ -1,5 +1,5 @@
 import {expect} from 'chai'
-import {html, render, setCSPTrustedTypesPolicy} from '../lib/index.js'
+import {html, render, TemplateResult} from '../lib/index.js'
 import type {TemplateResult} from '../lib/index.js'
 
 describe('render', () => {
@@ -9,7 +9,7 @@ describe('render', () => {
   })
 
   afterEach(() => {
-    setCSPTrustedTypesPolicy(null)
+    TemplateResult.setCSPTrustedTypesPolicy(null)
   })
 
   it('memoizes by TemplateResult#template, updating old templates with new values', () => {
@@ -64,7 +64,7 @@ describe('render', () => {
     it('respects a Trusted Types Policy if it is set', () => {
       let policyCalled = false
       const rewrittenFragment = '<div id="bar"></div>'
-      setCSPTrustedTypesPolicy({
+      TemplateResult.setCSPTrustedTypesPolicy({
         createHTML: (_html: string) => {
           policyCalled = true
           return rewrittenFragment

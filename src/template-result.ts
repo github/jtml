@@ -1,10 +1,17 @@
 import {TemplateInstance, NodeTemplatePart} from '@github/template-parts'
 import type {TemplateTypeInit} from '@github/template-parts'
-import {getCSPTrustedTypesPolicy} from './trusted-types.js'
 
 const templates = new WeakMap<TemplateStringsArray, HTMLTemplateElement>()
 const renderedTemplates = new WeakMap<Node | NodeTemplatePart, HTMLTemplateElement>()
 const renderedTemplateInstances = new WeakMap<Node | NodeTemplatePart, TemplateInstance>()
+
+interface CSPTrustedHTMLToStringable {
+  toString: () => string
+}
+
+interface CSPTrustedTypesPolicy {
+  createHTML: (s: string) => CSPTrustedHTMLToStringable
+}
 
 export class TemplateResult {
   constructor(
@@ -13,6 +20,12 @@ export class TemplateResult {
     public processor: TemplateTypeInit
   ) {}
 
+  static cspTrustedTypesPolicy: CSPTrustedTypesPolicy | null = null
+
+  static setCSPTrustedTypesPolicy(policy: CSPTrustedTypesPolicy | null) {
+    TemplateResult.cspTrustedTypesPolicy = policy
+  }
+
   get template(): HTMLTemplateElement {
     if (templates.has(this.strings)) {
       return templates.get(this.strings)!
@@ -20,7 +33,9 @@ export class TemplateResult {
       const template = document.createElement('template')
       const end = this.strings.length - 1
       const html = this.strings.reduce((str, cur, i) => str + cur + (i < end ? `{{ ${i} }}` : ''), '')
-      const trustedHtml = getCSPTrustedTypesPolicy() ? (getCSPTrustedTypesPolicy()?.createHTML(html) as string) : html
+      const trustedHtml = TemplateResult.cspTrustedTypesPolicy
+        ? (TemplateResult.cspTrustedTypesPolicy.createHTML(html) as string)
+        : html
       template.innerHTML = trustedHtml
       templates.set(this.strings, template)
       return template

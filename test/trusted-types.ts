@@ -1,10 +1,9 @@
 import {expect} from 'chai'
-import {setCSPTrustedTypesPolicy} from '../lib/index.js'
-import {getCSPTrustedTypesPolicy} from '../lib/trusted-types.js'
+import {TemplateResult} from '../lib/index.js'
 
 describe('trusted types', () => {
   after(() => {
-    setCSPTrustedTypesPolicy(null)
+    TemplateResult.setCSPTrustedTypesPolicy(null)
   })
 
   it('can set a CSP Trusted Types policy', () => {
@@ -13,8 +12,8 @@ describe('trusted types', () => {
         return htmlText
       }
     }
-    expect(getCSPTrustedTypesPolicy()).to.equal(null)
-    setCSPTrustedTypesPolicy(dummyPolicy)
-    expect(getCSPTrustedTypesPolicy()).to.equal(dummyPolicy)
+    expect(TemplateResult.cspTrustedTypesPolicy).to.equal(null)
+    TemplateResult.setCSPTrustedTypesPolicy(dummyPolicy)
+    expect(TemplateResult.cspTrustedTypesPolicy).to.equal(dummyPolicy)
   })
 })

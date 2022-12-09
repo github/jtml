@@ -33,9 +33,7 @@ export class TemplateResult {
       const template = document.createElement('template')
       const end = this.strings.length - 1
       const html = this.strings.reduce((str, cur, i) => str + cur + (i < end ? `{{ ${i} }}` : ''), '')
-      const trustedHtml = TemplateResult.cspTrustedTypesPolicy
-        ? (TemplateResult.cspTrustedTypesPolicy.createHTML(html) as string)
-        : html
+      const trustedHtml = (TemplateResult.cspTrustedTypesPolicy?.createHTML(html) as string | undefined) ?? html
       template.innerHTML = trustedHtml
       templates.set(this.strings, template)
       return template

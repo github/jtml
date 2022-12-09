@@ -1,11 +1,15 @@
 import {expect} from 'chai'
-import {html, render} from '../lib/index.js'
+import {html, render, setCSPTrustedTypesPolicy} from '../lib/index.js'
 import type {TemplateResult} from '../lib/index.js'
 
 describe('render', () => {
   let surface: HTMLElement
   beforeEach(() => {
     surface = document.createElement('section')
+  })
+
+  afterEach(() => {
+    setCSPTrustedTypesPolicy(null)
   })
 
   it('memoizes by TemplateResult#template, updating old templates with new values', () => {
@@ -53,6 +57,23 @@ describe('render', () => {
       const main = () => html`<div>${[sub(), sub()]}</div>`
       render(main(), surface)
       expect(surface.innerHTML).to.contain('<div><span><div></div></span><span><div></div></span></div>')
+    })
+  })
+
+  describe('trusted types', () => {
+    it('respects a Trusted Types Policy if it is set', () => {
+      let policyCalled = false
+      const rewrittenFragment = '<div id="bar"></div>'
+      setCSPTrustedTypesPolicy({
+        createHTML: (_html: string) => {
+          policyCalled = true
+          return rewrittenFragment
+        }
+      })
+      const main = (x: string | null = null) => html`<div class="${x}"></div>`
+      render(main('foo'), surface)
+      expect(surface.innerHTML).to.equal(rewrittenFragment)
+      expect(policyCalled).to.be.true
     })
   })
 })

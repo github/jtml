@@ -1,6 +1,6 @@
 import {TemplateInstance, NodeTemplatePart} from '@github/template-parts'
 import type {TemplateTypeInit} from '@github/template-parts'
-import {TrustedTypesPolicy} from './trusted-types.js'
+import {getCSPTrustedTypesPolicy} from './trusted-types.js'
 
 const templates = new WeakMap<TemplateStringsArray, HTMLTemplateElement>()
 const renderedTemplates = new WeakMap<Node | NodeTemplatePart, HTMLTemplateElement>()
@@ -20,9 +20,7 @@ export class TemplateResult {
       const template = document.createElement('template')
       const end = this.strings.length - 1
       const html = this.strings.reduce((str, cur, i) => str + cur + (i < end ? `{{ ${i} }}` : ''), '')
-      const trustedHtml = TrustedTypesPolicy.cspTrustedTypesPolicy
-        ? (TrustedTypesPolicy.cspTrustedTypesPolicy.createHTML(html) as string)
-        : html
+      const trustedHtml = getCSPTrustedTypesPolicy() ? (getCSPTrustedTypesPolicy()?.createHTML(html) as string) : html
       template.innerHTML = trustedHtml
       templates.set(this.strings, template)
       return template

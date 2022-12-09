@@ -6,10 +6,12 @@ interface CSPTrustedTypesPolicy {
   createHTML: (s: string) => CSPTrustedHTMLToStringable
 }
 
-export class TrustedTypesPolicy {
-  static cspTrustedTypesPolicy: CSPTrustedTypesPolicy | null = null
+let cspTrustedTypesPolicy: CSPTrustedTypesPolicy | null = null
 
-  static setTrustedTypesPolicy(policy: CSPTrustedTypesPolicy | null): void {
-    TrustedTypesPolicy.cspTrustedTypesPolicy = policy
-  }
+export function getCSPTrustedTypesPolicy() {
+  return cspTrustedTypesPolicy
+}
+
+export function setCSPTrustedTypesPolicy(policy: CSPTrustedTypesPolicy | null) {
+  cspTrustedTypesPolicy = policy
 }

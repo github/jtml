@@ -28,7 +28,7 @@
   },
   "prettier": "@github/prettier-config",
   "dependencies": {
-    "@github/template-parts": "^0.5.0"
+    "@github/template-parts": "^0.5.4"
   },
   "devDependencies": {
     "@github/prettier-config": "0.0.4",
